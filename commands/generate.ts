@@ -27,7 +27,7 @@ export default function generate(gen: string, name: string) {
       //todo maybe add subroutes for test/integration, and such
     // create a test for the component
     const test =
-      `import ${pageName?.slice(0, 1).toUpperCase() + pageName.slice(1)} from '${path.relative(path.join(testRoute), path.join(pageRoute, nameArr.slice(0, nameArr.length - 1).join("/")))}'\n`
+      `import ${pageName?.slice(0, 1).toUpperCase() + pageName.slice(1)} from '${path.relative(path.join(testRoute), path.join(pageRoute, nameArr.join("/") + pageFileExtension))}'\n`
       + `import { render } from "@testing-library/react"\n`
       + `function renderPage() {\n`
       + `  return render(${pageName.slice(0, 1).toUpperCase() + pageName.slice(1)}())\n`
