@@ -53,22 +53,37 @@ which will install this globally on your system, allowing you to use it in any n
  - generate | g \<page\> \<page name\> [scaffold] -- generates page, style, and test files, scaffold is optional
 
 scaffold examples
-  - scaffold format 
+  - scaffold format example
   ```
 {
   f?: [
-    n: string // name of the function
-    a?: string[] | string // arguments for the function
+    {
+      n: string // name of the function
+      a?: string[] | string // arguments for the function
+    },
+    {
+      n: string // name of the function
+      a?: string[] | string // arguments for the function
+    }
   ] // functions for the component
   r?: [ // element/s to return
-    t?: string // html tag
-    h?: string<"ocl" || "och"> | Array< string <"ocl" || "och"> > // handleClick, and handleChange
-    c?: string // inner content -- will appear above the children
-    cl?: string[] | string // classname
-    ch?: [] // child elements... maybe this could combine with c, but idk right now
+    {
+      t?: string // html tag
+      h?: string<"ocl" || "och"> | Array< string <"ocl" || "och"> > // handleClick, and handleChange
+      c?: string // inner content -- will appear above the children
+      cl?: string[] | string // classname
+      ch?: [{ // child elements... maybe this could merge the functionality with c, but idk right now
+        t?: string // html tag
+        h?: string<"ocl" || "och"> | Array< string <"ocl" || "och"> > // handleClick, and handleChange
+        c?: string // inner content -- will appear above the children
+        cl?: string[] | string // classname
+        ch?: [{}] // child elements
+      }]
+    }
   ]
 }
 ```
+note: for classnames you currently cannot use -, I think it is because commanderjs is intercepting it because it thinks you are trying to add a flag.
 ```
 $ nx g page home/index '{"f": [{ "n": "test", "a": ["testArg", "argTwo"] }, { "n": "funcTwo" }, { "n": "oneArg", "a": "one" }], "r": [{"t": "span","cl": "style_as_string", "c": "this is the content", "ch": [{ "t": "span", "cl": ["span", "other_style"], "h": ["ocl", "och"], "c": "inner content", "ch": [{ "h": ["ocl"], "c": "inner inner", "cl": ["oneName"] }] }] }] }'
 ```
