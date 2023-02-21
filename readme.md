@@ -41,9 +41,105 @@ I have not done much testing to see what can be skiped for this, and for release
 ```
 
 ## Getting started
+from the root dir for this cli
+since -g, --global seems to be deprecated
+```
+$ npm install --location=global
+```
+which will install this globally on your system, allowing you to use it in any next project (not meant for other types of projects, but maybe could configure it to be fine, but routing could be the issue) 
 
 ### commands
  - init -- creates nx.config.json
- - generate | g \<page\> \<page name\> -- generates page, style, and test files
+ - generate | g \<page\> \<page name\> [scaffold] -- generates page, style, and test files, scaffold is optional
 
+scaffold examples
+  - scaffold format 
+  ```
+{
+  f?: [
+    n: string // name of the function
+    a?: string[] | string // arguments for the function
+  ] // functions for the component
+  r?: [ // element/s to return
+    t?: string // html tag
+    h?: string<"ocl" || "och"> | Array< string <"ocl" || "och"> > // handleClick, and handleChange
+    c?: string // inner content -- will appear above the children
+    cl?: string[] | string // classname
+    ch?: [] // child elements... maybe this could combine with c, but idk right now
+  ]
+}
+```
+```
+$ nx g page home/index '{"f": [{ "n": "test", "a": ["testArg", "argTwo"] }, { "n": "funcTwo" }, { "n": "oneArg", "a": "one" }], "r": [{"t": "span","cl": "style_as_string", "c": "this is the content", "ch": [{ "t": "span", "cl": ["span", "other_style"], "h": ["ocl", "och"], "c": "inner content", "ch": [{ "h": ["ocl"], "c": "inner inner", "cl": ["oneName"] }] }] }] }'
+```
+or in this case
+```
+$ nx g page home/index --template first
+```
+will output something like
+
+<br>
+
+terminal:
+```
+Created-file: ./src/styles/home_index.module.scss
+Created-file: ./src/pages/home/index.tsx
+Created-file: ./src/test/home/index.spec.ts
+```
+
+./src/pages/home/index.tsx: 
+```
+import styles from '../../styles/home_index.module.scss'
+export default function Index() {
+  const test = (testArg: any, argTwo: any): any => {} // please add your own types / interfaces
+  const funcTwo = (): any => {} // please add your own types / interfaces
+  const oneArg = (one: any): any => {} // please add your own types / interfaces
+  const handleClick = (e: any) => {} // please add your own types / interfaces
+  const handleChange = (e: any) => {} // please add your own types / interfaces
+  return (
+    <>
+      <span className={styles.style_as_string}>this is the content
+        <span className={`${styles.span} ${styles.other_style}`}
+          onClick={handleClick}        
+          onChange={handleChange}
+        >inner content
+          <div className={`${styles.oneName}`}
+            onClick={handleClick}
+          >inner inner</div>
+        </span>
+      </span>
+    </>
+  )
+}
+```
+
+./src/test/home/index.spec.ts:
+```
+import Index from '../pages/home/index'
+import { render } from "@testing-library/react"
+function renderPage() {
+  return render(Index())
+}
+test("should display make_this_dynamic", async () => {
+  // const {findByTestId} = renderPage()
+  // const page = await findByTestId("make_this_dynamic")
+})
+```
+
+./src/styles/home_index.module.scss:
+```
+.style_as_string {}
+.span {}
+.other_style {}
+.oneName {}
+```
+#### flags:
+```
+  -p | --skip_page,  skips the page
+  -s | --skip_style, skips the style module
+  -t | --skip_test,  skips the test
+  -d | --delete,   deletes the files generated, but can skip deletion of some with flags
+  --template, used with generate page, it uses an example template to scaffold the page
+```
+    
  their will be more to come.

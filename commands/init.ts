@@ -1,10 +1,13 @@
 import chalk from 'chalk'
 import fs from 'fs'
-import config from '../getConfig'
+import config from '../helpers/getConfig'
+import { program } from 'commander'
 export default function init() {
   // this is to stop the error from logging in the console for this command, because it would be weird,
   //  if it complained about not having the config file when running the command to make it
   config.catch(() => { })
+  const options = program.opts()
+  console.log(options)
   // Variables to be used when building the json file
   let usingTypeScript: boolean = false
   let pageFileExtension: string = ".jsx"
