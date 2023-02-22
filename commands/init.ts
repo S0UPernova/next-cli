@@ -7,17 +7,17 @@ export default function init() {
   //  if it complained about not having the config file when running the command to make it
   const { exec } = require("child_process");
 
-// exec("ls", (error: any, stdout: any, stderr: any) => {
-//     if (error) {
-//         console.log(`error: ${error.message}`);
-//         return;
-//     }
-//     if (stderr) {
-//         console.log(`stderr: ${stderr}`);
-//         return;
-//     }
-//     console.log(`stdout: \n${stdout}`);
-// })
+  // exec("ls", (error: any, stdout: any, stderr: any) => {
+  //     if (error) {
+  //         console.log(`error: ${error.message}`);
+  //         return;
+  //     }
+  //     if (stderr) {
+  //         console.log(`stderr: ${stderr}`);
+  //         return;
+  //     }
+  //     console.log(`stdout: \n${stdout}`);
+  // })
   config.catch(() => { })
   const options = program.opts()
   // console.log(options)
@@ -154,7 +154,7 @@ export default function init() {
     })
 
   }
-  
+
   const createNxConfig = (pageFormat: string, testFormat: string, styeFormat: string) => {
     const initialConfig =
       `{\n`
@@ -171,10 +171,10 @@ export default function init() {
       .catch((err: any) => {
         console.error(err)
       })
-    
+
   }
   const createJestConfig = (isTypeScript: boolean) => {
-    const initialConfig =`/*
+    const initialConfig = `/*
     * For a detailed explanation regarding each configuration property and type check, visit:
     * https://jestjs.io/docs/configuration
     */
@@ -213,23 +213,23 @@ export default function init() {
       .catch((err: any) => {
         console.error(err)
       })
-    
+
   }
   const installTheDependencies = (isTypeScript: boolean) => {
     const { exec } = require("child_process");
-    exec(`npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3" ts-node@"^10.9.1"${isTypeScript? ' ts-jest@"^29.0.5" @types/jest@"^29.4.0"' : ""} && npm set-script test jest`, (error: any, stdout: any, stderr: any) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`${stdout}`);
+    exec(`npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3""${isTypeScript ? ' ts-node@"^10.9.1 ts-jest@"^29.0.5" @types/jest@"^29.4.0"' : ""} && npm set-script test jest`, (error: any, stdout: any, stderr: any) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return;
+      }
+      console.log(`${stdout}`);
     })
   }
 
-    //* start questions
-    isTypeScript()
+  //* start questions
+  isTypeScript()
 }

@@ -5,26 +5,17 @@ I have not done much testing to see what can be skiped for this, and for release
 ## step I need to automate
 `npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3" ts-node@"^10.9.1"
 
-\<project root\>/package.json
+dev Dependencies
 ```
-"dependencies": {
-    "@next/font": "13.1.6",
-    "@types/node": "18.13.0",
-    "@types/react": "18.0.28",
-    "@types/react-dom": "18.0.11",
-    "next": "13.1.6",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "sass": "^1.58.1",
-    "typescript": "4.9.5"
-  },
-"devDependencies": {
-    "@testing-library/react": "^13.4.0",
-    "jest": "^29.4.2",
-    "jest-environment-jsdom": "^29.4.3",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@types/jest": "^29.4.0",
-  }
+"@testing-library/react": "^13.4.0"
+"jest": "^29.4.2"
+"jest-environment-jsdom": "^29.4.3"
+"@testing-library/jest-dom": "^5.16.5"
+
+// if you are using typescript
+"@types/jest": "^29.4.0"
+"ts-node": "^10.9.1"
+  
 ```
 
 \<project root\>/nx.config.json --example

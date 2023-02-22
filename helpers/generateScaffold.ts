@@ -1,30 +1,29 @@
 //! not sure if this will be good for productivity over just writing it nomally
 // todo add tests based on scaffold
 // todo add scaffolding for styles 
-
-import chalk from "chalk"
-import config from './getConfig'
-
-//? maybe just stub out the styles with the classNames 
-interface functions {
+interface builtScaffold {
+  component: string
+  styles: string
+  test: string
+}
+ interface functions {
   n: string // name of the function
   a?: string[] | string // arguments for the function
 }
-type handlers = string
-"ocl" ||  // onClick
-  "och" // onChange
+ type handlers =  "ocl" |  "och"
 
-interface element {
+ interface element {
   t?: string // html tag
   h?: handlers | Array<handlers> // handleClick and such
   c?: string // inner content -- will appear above the children
   cl?: string[] | string // classname
   ch?: element[] // child elements
 }
-interface component {
+ interface component {
   f?: Array<functions> // functions for the component
-  r?: Array<element> // todo allow single element not in array
+  r?: Array<element>
 }
+
 /**
  * 
  * @param name What to name the function
@@ -36,7 +35,7 @@ function indentation(indentLevel: number, spacesPerIndent: number) {
   const indent: string = indentBy.repeat(indentLevel !== undefined ? indentLevel : 1)
   return indent
 }
-export default function generateScaffold(gen: component, usingTypeScript: boolean) {
+export default function generateScaffold(gen: component, usingTypeScript: boolean): builtScaffold {
 
     // todo for ts add types to args... maybe start with any
     function buildFunction(name: string, args?: string[] | string | undefined, indentLevel?: number, spacesPerIndent?: number): string {
@@ -133,5 +132,5 @@ export default function generateScaffold(gen: component, usingTypeScript: boolea
       + `  // const page = await findByTestId("make_this_dynamic")\n`
       + `})\n` // todo get tests to integrate, and then get this to actually write the files
     // todo maybe use this return in createPageAndFolders, and replace component, style, and test with these values
-    return { styles: styles, component: component, test: test } //! change from return to writing files
+    return { styles: styles, component: component, test: test }
 }
