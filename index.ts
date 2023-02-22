@@ -3,6 +3,7 @@
 import { program } from 'commander'
 import init from './commands/init'
 import generate from "./commands/generate"
+import { ChildProcess } from 'node:child_process'
 
 program.option('-d, --delete', "Delete generation")
 program.option('-t, --skip_test', "Skips test")

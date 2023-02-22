@@ -2,6 +2,9 @@
 ## requirements
 I have not done much testing to see what can be skiped for this, and for release (if do that) I will probably complie it to js so that ts is not required.
 
+## step I need to automate
+`npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3" ts-node@"^10.9.1"
+
 \<project root\>/package.json
 ```
 "dependencies": {
@@ -16,15 +19,11 @@ I have not done much testing to see what can be skiped for this, and for release
     "typescript": "4.9.5"
   },
 "devDependencies": {
-    "@babel/preset-env": "^7.20.2",
-    "@babel/preset-react": "^7.18.6",
-    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@types/jest": "^29.4.0",
-    "babel-jest": "^29.4.2",
     "jest": "^29.4.2",
     "jest-environment-jsdom": "^29.4.3",
-    "ts-jest": "^29.0.5"
+    "@testing-library/jest-dom": "^5.16.5",
+    "@types/jest": "^29.4.0",
   }
 ```
 
