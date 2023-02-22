@@ -136,9 +136,9 @@ export default function createPageAndFolders(name: string, scaffold: any): any {
 
     if (!options.skip_style) {
       //* Creates style module file
-      await fs.promises.writeFile(`${path.join(styleRoute, nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0, nameArr.length - 1) + ".module" + styleFileExtension)}`, style)
+      await fs.promises.writeFile(`${path.join(styleRoute, nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0) + ".module" + styleFileExtension)}`, style)
         .then(() => {
-          console.log(chalk.green.bold(`Created-file: ${styleRoute}/${nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0, nameArr.length - 1)}.module${styleFileExtension}`))
+          console.log(chalk.green.bold(`Created-file: ${styleRoute}/${nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0)}.module${styleFileExtension}`))
         })
         .catch((err: any) => {
           console.error(err)
@@ -150,10 +150,10 @@ export default function createPageAndFolders(name: string, scaffold: any): any {
       await fs.promises.mkdir(testRoute, { recursive: true })
         .then(() => {
           //* Creates test for page
-          fs.promises.writeFile(path.join(testRoute, nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0, nameArr.length - 1) + ".spec" + testFileExtension),
+          fs.promises.writeFile(path.join(testRoute, nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0) + ".spec" + testFileExtension),
             test
           ).then(() => {
-            console.log(chalk.green.bold(`Created-file: ${testRoute}/${nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0, nameArr.length - 1)}.spec${testFileExtension}`))
+            console.log(chalk.green.bold(`Created-file: ${testRoute}/${nameArr.slice().join("_").split('').filter(s => s !== "[" && s !== "]").join("").split("/").slice(0)}.spec${testFileExtension}`))
           })
         })
     }

@@ -39,7 +39,7 @@ function indentation(indentLevel: number, spacesPerIndent: number) {
 export default function generateScaffold(gen: component, usingTypeScript: boolean) {
 
     // todo for ts add types to args... maybe start with any
-    function buildFunction(name: string, args: string[] | string | undefined, indentLevel?: number, spacesPerIndent?: number): string {
+    function buildFunction(name: string, args?: string[] | string | undefined, indentLevel?: number, spacesPerIndent?: number): string {
       let arg: string
       if (args && args?.length > 1 && Array.isArray(args)) {
         arg = args.join(`${usingTypeScript ? ": any": ""}, `) + `${usingTypeScript ? ": any": ""}`

@@ -10,6 +10,7 @@ export default function generate(gen: string, name: string, scaffold?: any) {
 
   switch (gen) {
     //? maybe have it make index pages for each empty dir it creates
+    case "p":
     case "page":
       // todo add check to make sure it is not api/*
       // todo add delete option
@@ -24,10 +25,6 @@ export default function generate(gen: string, name: string, scaffold?: any) {
           createPageAndFolders(name, scaffold)
         }
       }
-      break
-    case "scaffold":
-      //? maybe instead of this just have an optional param, which if specified does this functionality
-      console.log(`scaffold will allow you to build out the page, should add tests for the elements... not sure of the syntax`)
       break
     case "test":
       console.log(chalk.blue("Will just gen a test could do test/integration/thing and file extensions are added automatically"))
