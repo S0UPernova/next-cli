@@ -1,6 +1,7 @@
 //! not sure if this will be good for productivity over just writing it nomally
 // todo add tests based on scaffold
 // todo add scaffolding for styles 
+// todo add state scaffold
 interface builtScaffold {
   component: string
   styles: string
@@ -10,7 +11,7 @@ interface builtScaffold {
   n: string // name of the function
   a?: string[] | string // arguments for the function
 }
- type handlers =  "ocl" |  "och"
+ type handlers =  "ocl" |  "och" | "sub"
 
  interface element {
   t?: string // html tag
@@ -18,6 +19,7 @@ interface builtScaffold {
   c?: string // inner content -- will appear above the children
   cl?: string[] | string // classname
   ch?: element[] // child elements
+  n?: string // name prop
 }
  interface component {
   f?: Array<functions> // functions for the component
@@ -74,7 +76,8 @@ export default function generateScaffold(gen: component, usingTypeScript: boolea
       const construct = (elements: element[], indentLevel?: number, spacesPerIndent?: number) => {
         const handlers = {
           och: "onChange",
-          ocl: "onClick"
+          ocl: "onClick",
+          sub: "onSubmit"
         }
         const element = elements.map((element: element, i) => {
           // the about of spaced needed for the current level of indentation
@@ -96,7 +99,7 @@ export default function generateScaffold(gen: component, usingTypeScript: boolea
           else {
             elStyle = ""
           }
-          const built: string = `${indent}<${element.t ? element.t : "div"}${elStyle}${element?.h !== undefined ?
+          const built: string = `${indent}<${element.t ? element.t : "div"}${element.n ? ` name="${element.n}" ` : ""}${elStyle}${element?.h !== undefined ?
             element?.h && Array.isArray(element.h) ? element.h.map((key: string) => {
               if (Object.keys(handlers).includes(key)) {
                 let k = key as keyof typeof handlers
@@ -110,7 +113,7 @@ export default function generateScaffold(gen: component, usingTypeScript: boolea
             }>${element?.c ? element.c : ""}${element?.ch ? `\n` + construct(element.ch, indentLevel ? indentLevel + 1 : 1, spacesPerIndent !== undefined ? spacesPerIndent : 2) + `\n${indent}` : ""}</${element.t ? element.t : "div"}>`
           return built
         })
-        return element.join()
+        return element.join("\n")
       }
 
       const elementOrElements = construct(elements, indentLevel ? indentLevel + 1 : 1, spacesPerIndent !== undefined ? spacesPerIndent : 2)

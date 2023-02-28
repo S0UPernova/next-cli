@@ -4,6 +4,7 @@ import { program } from 'commander'
 import * as starterTemplates from '../templates/templateIndex'
 import generateScaffold from './generateScaffold'
 import { isNamedImports } from 'typescript'
+import chalk from 'chalk'
 interface builtScaffold {
   component: string
   styles: string
@@ -40,6 +41,7 @@ export default function buildScaffoldOrTemplate({ name, scaffold, nameForStyleAn
           if (template === undefined || !template.component) throw new Error(`Unable to find template "${options.template}"`)
     } 
     else if (scaffold) {
+      console.log(chalk.yellow(scaffold))
       const scaf = JSON.parse(scaffold)
       template = generateScaffold(scaf, usingTypeScript)
     }

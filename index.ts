@@ -4,7 +4,7 @@ import { program } from 'commander'
 import init from './commands/init'
 import generate from "./commands/generate"
 
-// program.option('-d, --delete', "Delete generation") //todo implement this
+program.option('-d, --delete', "Delete generation")
 program.option('-t, --skip_test', "Skips test")
 program.option('-p, --skip_page', "Skips page")
 program.option('-s, --skip_style', "Skip style module")

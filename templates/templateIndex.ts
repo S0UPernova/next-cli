@@ -1,2 +1,3 @@
 import firstTemplate from "./firstTemplate";
-export {firstTemplate}
+import signup from "./signup";
+export {firstTemplate, signup}

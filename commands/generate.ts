@@ -12,18 +12,11 @@ export default function generate(gen: string, name: string, scaffold?: any) {
     //? maybe have it make index pages for each empty dir it creates
     case "p":
     case "page":
-      // todo add check to make sure it is not api/*
-      // todo add delete option
-      if (options?.delete) {
-        console.log(chalk.red.bold("deletion coming soon-ish"))
+      if (name.match(/^\/?api\/?/i)) {
+        console.log(chalk.red("Please use nx g api <route/name>"))
       }
       else {
-        if(name.match(/^\/?api\/?/i)) {
-          console.log(chalk.red("Please use nx g api <route/name>"))
-        }
-        else {
-          createPageAndFolders(name, scaffold)
-        }
+        createPageAndFolders(name, scaffold)
       }
       break
     case "test":
@@ -32,7 +25,7 @@ export default function generate(gen: string, name: string, scaffold?: any) {
     case "style":
       break
     case "api":
-      
+
       console.log(chalk.blue("creates file in api folder... coming soon"))
       break
   }
