@@ -217,7 +217,7 @@ export default function init() {
   }
   const installTheDependencies = (isTypeScript: boolean) => {
     const { exec } = require("child_process");
-    exec(`npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3"${isTypeScript ? ' ts-node@"^10.9.1" ts-jest@"^29.0.5" @types/jest@"^29.4.0"' : ""} && npm set-script test jest`, (error: any, stdout: any, stderr: any) => {
+    exec(`npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3" @testing-library/jest-dom@"^5.16.5"${isTypeScript ? ' ts-node@"^10.9.1" ts-jest@"^29.0.5" @types/jest@"^29.4.0"' : ""} && npm set-script test jest`, (error: any, stdout: any, stderr: any) => {
       if (error) {
         console.log(`error: ${error.message}`);
         return;

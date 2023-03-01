@@ -1,3 +1,3 @@
-import testExample from "./testExample"
+import signup from "./signup"
 import defaultTemplate from "./defaultTemplate"
-export { testExample, defaultTemplate }
+export { signup, defaultTemplate }

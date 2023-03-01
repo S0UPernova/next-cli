@@ -4,11 +4,13 @@ import { program } from 'commander'
 import init from './commands/init'
 import generate from "./commands/generate"
 
+//* setting up options / flags
 program.option('-d, --delete', "Delete generation")
 program.option('-t, --skip_test', "Skips test")
 program.option('-p, --skip_page', "Skips page")
 program.option('-s, --skip_style', "Skip style module")
-program.option('--template <template name>', 'Use a template for scaffold')
+program.option('-T, --template <template name>', 'Use a templateC')
+program.option('-f, --force', 'forces action, for example when generating you can force it to overwrite existing files\n coming soon...')
 
 program.command("init")
   .description("initialize nx.config.json")
