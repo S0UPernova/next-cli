@@ -15,7 +15,7 @@ program.command("init")
   .action(init)
 
 program
-  .command("generate <whatToMake> <whatToNameIt> [scaffold]")
+  .command("generate <whatToMake> <whatToNameIt>")
   .alias("g")
   .description(
     "$ nx g, or $ nx generate <type> <name>\n"

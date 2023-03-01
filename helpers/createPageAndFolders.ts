@@ -1,16 +1,18 @@
-import chalk from 'chalk'
-import fs from 'fs'
-import config from '../helpers/getConfig'
 import { program } from 'commander'
-import buildScaffoldOrTemplate from './buildScaffoldOrTemplate'
-export default function createPageAndFolders(name: string, scaffold: any): any {
-  const options = program.opts()
+import fs from 'fs'
+import chalk from 'chalk'
+
+import config from '../helpers/getConfig'
+import buildFiles from './buildFiles'
+import getNames from './getNames'
+import createOrDeleteFile from './createOrDeleteFile'
+
+export default function createPageAndFolders(pathAndOrName: string): any {
   const path = require('node:path')
-  const nameArr: string[] = name.split('/')
-  const pageName: string = nameArr[nameArr.length - 1].split('').filter(s => s !== "[" && s !== "]").join("") // todo get this to work with something like blog/[blogId] or blog/[blog_id] blog/[blog-id] maybe require specific separators - or _ 
-  const componentName: string = pageName.split(/[-_]/)[0].slice(0, 1).toUpperCase() + pageName.slice(1)
-  const nameForStyleAndTest = name.replace(/\//g, "_").replace(/[\[\]]/g, "")
+  const options = program.opts()
+
   config.then(async (data) => {
+    const names = getNames(pathAndOrName)
     const pageRoute: string = data?.pageRoute ? data.pageRoute : './src/pages'
     const styleRoute: string = data?.styleRoute ? data.styleRoute : './src/styles'
     const testRoute: string = data?.testRoute ? data.testRoute : './src/test'
@@ -18,41 +20,17 @@ export default function createPageAndFolders(name: string, scaffold: any): any {
     const testFileExtension: string = data?.testFileExtension ? data.testFileExtension : '.js'
     const styleFileExtension: string = data?.styleFileExtension ? data.styleFileExtension : '.css'
 
-    const constructedElements = await buildScaffoldOrTemplate({ name: name, scaffold: scaffold, nameForStyleAndTest: nameForStyleAndTest, pageName, componentName })
+    //* The build step
+    const constructedElements = await buildFiles({ fullPath: pathAndOrName, nameForStyleAndTest: names.nameForStyleAndTest, pageName: names.pageName, componentName: names.componentName })
 
-    const createOrDeleteFile = async (fullFilePath: string, content: string) => {
-      // todo add prompt to ask if you want to overwrite them
-      await fs.promises.readFile(fullFilePath)
-        .then(() => {
-          if (options.delete) {
-            //todo maybe have any empty dirs leading to it also get removed somehow
-            // Deletes the page
-            fs.promises.rm(fullFilePath).then(() => {
-              console.log(chalk.red(`Deleted: ${fullFilePath}`))
-            })
-          }
-          else {
-            console.log(chalk.yellow(`File-exists: ${fullFilePath}`))
-          }
-        })
-        .catch(err => {
-          if (err.code === "ENOENT" && !options.delete) {
-            //* Creates the file
-            fs.promises.writeFile(`${fullFilePath}`, content)
-              .then(() => {
-                console.log(chalk.green.bold(`Created-file: ${fullFilePath}`))
-              })
-          }
-          else console.log(chalk.red(err))
-        })
-    }
 
+    //* The creation step 
     if (!options.skip_page) {
       //* Creates the directories to get to the final file location (unless they already exist)
-      await fs.promises.mkdir(`${path.join(pageRoute, nameArr.slice(0, nameArr.length - 1).join('/'))}`, { recursive: true })
+      await fs.promises.mkdir(`${path.join(pageRoute, names.nameArr.slice(0, names.nameArr.length - 1).join('/'))}`, { recursive: true })
         .then(() => {
           //* Creates the page file
-          createOrDeleteFile(path.join(pageRoute, name + pageFileExtension), constructedElements.component)
+          createOrDeleteFile(path.join(pageRoute, pathAndOrName + pageFileExtension), constructedElements.component)
         })
     }
 
@@ -61,7 +39,7 @@ export default function createPageAndFolders(name: string, scaffold: any): any {
       await fs.promises.mkdir(styleRoute, { recursive: true })
         .then(() => {
           //* Creates style module file
-          createOrDeleteFile(path.join(styleRoute, nameForStyleAndTest + ".module" + styleFileExtension), constructedElements.styles)
+          createOrDeleteFile(path.join(styleRoute, names.nameForStyleAndTest + ".module" + styleFileExtension), constructedElements.styles)
         })
     }
 
@@ -70,7 +48,7 @@ export default function createPageAndFolders(name: string, scaffold: any): any {
       await fs.promises.mkdir(testRoute, { recursive: true })
         .then(() => {
           //* Creates test for page
-          createOrDeleteFile(path.join(testRoute, nameForStyleAndTest + ".spec" + testFileExtension), constructedElements.test)
+          createOrDeleteFile(path.join(testRoute, names.nameForStyleAndTest + ".spec" + testFileExtension), constructedElements.test)
         })
     }
   })

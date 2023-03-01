@@ -1,5 +1,7 @@
 import fs from 'fs'
 import path from 'node:path'
+// todo add color scheme to config
+// todo add spaces per indent level to config
 interface data {
   "pageRoute"?: string
   "styleRoute"?: string
