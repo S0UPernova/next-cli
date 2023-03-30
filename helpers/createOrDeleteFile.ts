@@ -20,10 +20,13 @@ export default async function createOrDeleteFile(fullFilePath: string, content: 
     .catch(err => {
       if (err.code === "ENOENT" && !options.delete) {
         //* Creates the file
-        fs.promises.writeFile(`${fullFilePath}`, content)
-          .then(() => {
-            console.log(chalk.green.bold(`Created-file: ${fullFilePath}`))
-          })
+        //* Using setTimeout of zero so that it waits for the dir to be created, not sure why I need to since it is in a .then
+        setTimeout(() => { //! puts this on the event queue
+          fs.promises.writeFile(`${fullFilePath}`, content)
+            .then(() => {
+              console.log(chalk.green.bold(`Created-file: ${fullFilePath}`))
+            })
+        }, 0)
       }
       else console.log(chalk.red(err))
     })

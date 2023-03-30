@@ -9,6 +9,8 @@ interface data {
   "pageFileExtension"?: string
   "testFileExtension"?: string
   "styleFileExtension"?: string
+  "usingAppDir"?: boolean
+  "usingSrcDir"?: boolean
 }
 const config = fs.promises.readFile(path.join(process.cwd(), 'nx.config.json'), 'utf-8').then((data): data => {
   return JSON.parse(data)

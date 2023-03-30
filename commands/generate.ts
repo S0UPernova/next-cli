@@ -1,8 +1,6 @@
 import chalk from 'chalk'
-import { program } from 'commander'
 import createPageAndFolders from '../helpers/createPageAndFolders'
 export default function generate(gen: string, name: string) {
-  const options = program.opts()
   if (!gen || !name) {
     console.log("missing param/s")
     return

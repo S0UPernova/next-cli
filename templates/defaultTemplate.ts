@@ -3,23 +3,26 @@ const path = require('node:path')
 
 import config from '../helpers/getConfig'
 import indent from '../helpers/indent'
-
+import paths from '../helpers/getPaths'
+import getPaths from '../helpers/getPaths'
+import getNames from '../helpers/getNames'
 interface builtFiles {
   component: string
   styles: string
   test: string
 }
 
-export default function defaultTemplate({ fullPath, nameForStyleAndTest, pageName, componentName }: any): Promise<builtFiles> {
+// todo abstract the path to a function like the names
+export default function defaultTemplate({ fullPath }: any): Promise<builtFiles> {
   return config.then(async (conf: any) => {
-    const options = program.opts()
-    const usingTypeScript: boolean = conf.pageFileExtension === ".ts" || conf.pageFileExtension === ".tsx"
-    const imp = !options.skip_style ? `import styles from '${path.relative(
-      path.join(conf.pageRoute, fullPath.split("/").slice(0, fullPath.split("/").length - 1).join("/")),
-      path.join(conf.styleRoute, nameForStyleAndTest + ".module" + conf.styleFileExtension)
-    )}'\n` : ""
-    const component = "// this is the default\n" + imp + `export default function ${componentName}() {\n`
-      + `${indent(1)}return <div data-testid="div" className={styles.hello}>Hello my name is ${pageName}</div>\n`
+    const paths = await getPaths(fullPath),
+      names = getNames(fullPath),
+      options = program.opts()
+
+    // const usingTypeScript: boolean = conf.pageFileExtension === ".ts" || conf.pageFileExtension === ".tsx"
+    const imp = !options.skip_style ? `import styles from '${paths.styleImportPath}'\n` : ""
+    const component = "// this is the default\n" + imp + `export default function ${names.componentName}() {\n`
+      + `${indent(1)}return <div data-testid="div" className={styles.hello}>Hello my name is ${names.pageName}</div>\n`
       + `}`
 
     // create a test for the component
@@ -36,16 +39,16 @@ export default function defaultTemplate({ fullPath, nameForStyleAndTest, pageNam
       + `//${indent(1)}})\n`
       + `})`
       :
-      `import ${componentName} from '${path.relative(path.join(conf.testRoute), path.join(conf.pageRoute, fullPath))}'\n`
+      `import ${names.componentName} from '${paths.componentImport}'\n`
       + `import { render } from "@testing-library/react"\n`
       + `function renderPage() {\n`
-      + `${indent(1)}return render(${componentName}())\n`
+      + `${indent(1)}return render(${names.componentName}())\n`
       + `}\n`
-      + `describe("<${componentName} />", () => {\n`
+      + `describe("<${names.componentName} />", () => {\n`
       + `${indent(1)}test("should display the starter div", async () => {\n`
       + `${indent(2)}const {findByTestId} = renderPage()\n`
       + `${indent(2)}const page = await findByTestId("div")\n`
-      + `${indent(2)}expect(page.innerHTML).toEqual("Hello my name is ${pageName}")\n`
+      + `${indent(2)}expect(page.innerHTML).toEqual("Hello my name is ${names.pageName}")\n`
       + `${indent(1)}})\n`
       + `})`
 

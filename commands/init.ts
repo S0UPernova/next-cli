@@ -1,33 +1,24 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import config from '../helpers/getConfig'
-import { program } from 'commander'
+// todo use indent function here, and ask how many spaces per level, and add that to conf, and have indent use that in future
 export default function init() {
   // this is to stop the error from logging in the console for this command, because it would be weird,
   //  if it complained about not having the config file when running the command to make it
-  const { exec } = require("child_process");
-
-  // exec("ls", (error: any, stdout: any, stderr: any) => {
-  //     if (error) {
-  //         console.log(`error: ${error.message}`);
-  //         return;
-  //     }
-  //     if (stderr) {
-  //         console.log(`stderr: ${stderr}`);
-  //         return;
-  //     }
-  //     console.log(`stdout: \n${stdout}`);
-  // })
+  // todo make it only ignore that specific error 
   config.catch(() => { })
-  const options = program.opts()
-  // console.log(options)
+
+
   // Variables to be used when building the json file
-  let usingTypeScript: boolean = false
-  let pageFileExtension: string = ".jsx"
-  let testFileExtension: string = "js"
-  let styleFileExtension: string = '.css'
-  let shouldCreateJestConfig: boolean = true
-  let shouldInstallDependencies: boolean = true
+  let usingTypeScript: boolean = false,
+    pageFileExtension: string = ".jsx",
+    testFileExtension: string = "js",
+    styleFileExtension: string = '.css',
+    usingAppDir: boolean = false,
+    usingSrcDir: boolean = false,
+    shouldCreateJestConfig: boolean = true,
+    shouldInstallDependencies: boolean = true
+
   // function to get input from the user
   const readline = require('readline').createInterface({
     input: process.stdin,
@@ -94,15 +85,11 @@ export default function init() {
     readline.question('Would you like to use scss? .scss[y] .css[n] ', (name: string) => {
       if (name.toLowerCase() === 'y') {
         styleFileExtension = ".scss"
-        // createConfig(pageFileExtension, testFileExtension, styleFileExtension)
-        allowCreationOfJestConfig()
-        // readline.close()
+        srcDirQuestion()
       }
       else if (name.toLowerCase() === 'n') {
         styleFileExtension = ".css"
-        // createConfig(pageFileExtension, testFileExtension, styleFileExtension)
-        allowCreationOfJestConfig()
-        // readline.close()
+        srcDirQuestion()
       }
       else {
         console.log("please use requested response format")
@@ -111,18 +98,51 @@ export default function init() {
     })
 
   }
+
+  function srcDirQuestion() {
+    readline.question('Are you using the src directory [y] [n] ', (name: string) => {
+      if (name.toLowerCase() === 'y') {
+        usingSrcDir = true
+        appDirQuestion()
+      }
+      else if (name.toLowerCase() === 'n') {
+        usingSrcDir = false
+        appDirQuestion()
+      }
+      else {
+        console.log("please use requested response format")
+        srcDirQuestion()
+      }
+    })
+
+  }
+
+  function appDirQuestion() {
+    readline.question('Are you using the expimental app directory [y] [n] ', (name: string) => {
+      if (name.toLowerCase() === 'y') {
+        usingAppDir = true
+        allowCreationOfJestConfig()
+      }
+      else if (name.toLowerCase() === 'n') {
+        usingAppDir = false
+        allowCreationOfJestConfig()
+      }
+      else {
+        console.log("please use requested response format")
+        appDirQuestion()
+      }
+    })
+
+  }
+
   function allowCreationOfJestConfig() {
     readline.question('Would you like to use this to create the jest config? [y] [n] ', (name: string) => {
       if (name.toLowerCase() === 'y') {
         shouldCreateJestConfig = true
-        // createConfig(pageFileExtension, testFileExtension, styleFileExtension)
-        // readline.close()
         allowPackageInstallation()
       }
       else if (name.toLowerCase() === 'n') {
         shouldCreateJestConfig = false
-        // createConfig(pageFileExtension, testFileExtension, styleFileExtension)
-        // readline.close()
         allowPackageInstallation()
       }
       else {
@@ -132,6 +152,7 @@ export default function init() {
     })
 
   }
+
   function allowPackageInstallation() {
     readline.question('Would you like this to install a few packages for you? [y] [n] ', (name: string) => {
       if (name.toLowerCase() === 'y') {
@@ -155,12 +176,14 @@ export default function init() {
 
   }
 
-  const createNxConfig = (pageFormat: string, testFormat: string, styeFormat: string) => {
+  const createNxConfig = (pageFormat: string, testFormat: string, styeFormat: string) => { // todo alter this to better work with app dir
     const initialConfig =
       `{\n`
-      + `  "pageRoute":"./src/pages",\n`
-      + `  "styleRoute": "./src/styles",\n`
-      + `  "testRoute": "./src/test",\n`
+      + `  "usingAppDir": ${usingAppDir},\n`
+      + `  "usingSrcDir": ${usingSrcDir},\n`
+      + `  "pageRoute":".${usingSrcDir ? "/src" : ""}${usingAppDir ? "/app" : "/pages"}",\n`
+      + `  "styleRoute":".${usingSrcDir ? "/src" : ""}${usingAppDir ? "/app" : "/styles"}",\n`
+      + `  "testRoute":".${usingSrcDir ? "/src" : ""}${usingAppDir ? "/app" : "/test"}",\n`
       + `  "pageFileExtension": "${pageFormat}",\n`
       + `  "testFileExtension": "${testFormat}",\n`
       + `  "styleFileExtension": "${styeFormat}"\n`
@@ -173,6 +196,7 @@ export default function init() {
       })
 
   }
+
   const createJestConfig = (isTypeScript: boolean) => {
     const initialConfig = `/*
     * For a detailed explanation regarding each configuration property and type check, visit:
@@ -215,9 +239,10 @@ export default function init() {
       })
 
   }
+
   const installTheDependencies = (isTypeScript: boolean) => {
     const { exec } = require("child_process");
-    exec(`npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3" @testing-library/jest-dom@"^5.16.5"${isTypeScript ? ' ts-node@"^10.9.1" ts-jest@"^29.0.5" @types/jest@"^29.4.0"' : ""} && npm set-script test jest`, (error: any, stdout: any, stderr: any) => {
+    exec(`npm i --save-dev @testing-library/jest-dom@"^5.16.5" @testing-library/react@"^14.0.0" jest@"^29.4.3" jest-environment-jsdom@"^29.4.3" @testing-library/jest-dom@"^5.16.5"${isTypeScript ? ' ts-node@"^10.9.1" ts-jest@"^29.0.5" @types/jest@"^29.4.0"' : ""}${styleFileExtension === ".scss" ? " sass": ""} && npm set-script test jest`, (error: any, stdout: any, stderr: any) => {
       if (error) {
         console.log(`error: ${error.message}`);
         return;

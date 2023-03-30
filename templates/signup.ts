@@ -2,6 +2,7 @@ import { program } from 'commander'
 const path = require('node:path')
 
 import config from '../helpers/getConfig'
+import getPaths from '../helpers/getPaths'
 import indent from '../helpers/indent'
 
 interface builtFiles {
@@ -10,14 +11,12 @@ interface builtFiles {
   test: string
 }
 
-export default function signup({ fullPath, nameForStyleAndTest, pageName, componentName }: any): Promise<builtFiles> {
+export default function signup({ fullPath, componentName }: any): Promise<builtFiles> {
   return config.then(async (conf: any) => {
+    const paths = await getPaths(fullPath)
     const options = program.opts()
-    const usingTypeScript: boolean = conf.pageFileExtension === ".ts" || conf.pageFileExtension === ".tsx"
-    const styleImport = !options.skip_style ? `import styles from '${path.relative(
-      path.join(conf.pageRoute, fullPath.split("/").slice(0, fullPath.split("/").length - 1).join("/")),
-      path.join(conf.styleRoute, nameForStyleAndTest + ".module" + conf.styleFileExtension)
-    )}'\n` : ""
+    const usingTypeScript: boolean = conf.pageFileExtension === ".ts" || conf.pageFileExtension === ".tsx"    
+    const styleImport = !options.skip_style ? `import styles from '${paths.styleImportPath}'\n` : ""
 
     const imports = `import {${usingTypeScript ? " ChangeEvent, FormEvent," : ""} useState } from 'react'\n`
       + styleImport
@@ -45,7 +44,8 @@ export default function signup({ fullPath, nameForStyleAndTest, pageName, compon
       + `${indent(4)}break\n`
       + `${indent(2)}}\n`
       + `${indent(1)}}\n`
-    const component = imports
+    const component = `${conf.usingAppDir ? '"use client"\n' : ""}`
+      + imports
       + `export default function ${componentName}() {\n`
       + stateParams
       + handlers
@@ -113,7 +113,7 @@ export default function signup({ fullPath, nameForStyleAndTest, pageName, compon
       + `//${indent(1)}})\n`
       + `})`
       :
-      `import ${componentName} from '${path.relative(path.join(conf.testRoute), path.join(conf.pageRoute, fullPath))}'\n`
+      `import ${componentName} from '${paths.componentImport}'\n`
       + `import { render } from "@testing-library/react"\n`
       + `import React from 'react'\n`
       + `import '@testing-library/jest-dom'\n\n`
